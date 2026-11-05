@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import { QRCodeSVG } from 'qrcode.react';
+import { SITE_URL } from '@/lib/site';
 
 export default function QRDonateOverlay() {
   const params = useParams();
@@ -11,7 +12,7 @@ export default function QRDonateOverlay() {
 
   useEffect(() => {
     if (username) {
-      const url = `${window.location.origin}/donate/${username}`;
+      const url = `${SITE_URL}/donate/${username}`;
       setDonateUrl(url);
     }
   }, [username]);

@@ -78,6 +78,7 @@ class User extends Authenticatable
     public function toFrontendArray(): array
     {
         $payout = $this->payout_settings ?? [];
+        $assetVersion = $this->updated_at?->timestamp ?? 0;
 
         return [
             'id' => $this->id,
@@ -94,8 +95,8 @@ class User extends Authenticatable
             'socialLinks' => $this->social_links ?? [],
             'overlayConfig' => $this->overlay_config ?? [],
             'stats' => $this->stats ?? [],
-            'profileImage' => $this->profile_image_path ? url('/api/user/profile-image/'.$this->id) : null,
-            'coverImage' => $this->cover_image_path ? url('/api/user/cover-image/'.$this->id) : null,
+            'profileImage' => $this->profile_image_path ? url('/api/user/profile-image/'.$this->id).'?v='.$assetVersion : null,
+            'coverImage' => $this->cover_image_path ? url('/api/user/cover-image/'.$this->id).'?v='.$assetVersion : null,
             'payoutBankName' => $payout['bankName'] ?? '',
             'payoutAccountNumber' => $payout['accountNumber'] ?? '',
             'payoutAccountHolder' => $payout['accountName'] ?? '',

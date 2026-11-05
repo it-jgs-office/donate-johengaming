@@ -9,6 +9,7 @@ import CreatorAppLayout from '@/components/dashboard/CreatorAppLayout';
 import ImageCropModal from '@/components/molecules/ImageCropModal';
 import PayoutFields from '@/components/molecules/PayoutFields';
 import { getStoredUser } from '@/utils/sessionManager';
+import { SITE_DISPLAY_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -277,7 +278,7 @@ function ProfileContent() {
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Hero Card: Avatar & Overview */}
-        <div className="jd-surface p-6 sm:p-7">
+        <div className="jd-surface p-4 sm:p-7">
           <div className="mb-7">
             <div className="mb-2 flex items-end justify-between gap-3">
               <div>
@@ -396,7 +397,7 @@ function ProfileContent() {
         </div>
 
         {/* Section 1: Informasi Dasar */}
-        <div ref={basicSectionRef} className="jd-surface p-6 sm:p-7 space-y-4">
+        <div ref={basicSectionRef} className="jd-surface space-y-4 p-4 sm:p-7">
           <div className="border-b-2 border-[#0F2A5F]/10 pb-3">
             <h3 className="font-black text-base text-[#0F2A5F]">Informasi Dasar</h3>
             <p className="text-xs font-medium text-[#526987] mt-0.5">
@@ -428,24 +429,15 @@ function ProfileContent() {
                 <input
                   type="text"
                   value={formData.username}
-                  onChange={payoutLocked ? undefined : (e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') })}
-                  disabled={payoutLocked}
+                  onChange={(e) => setFormData({ ...formData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') })}
                   placeholder="namamu"
-                  className={`w-full pl-8 pr-4 py-2.5 bg-[#f7fcff] border-2 border-[#0F2A5F] rounded-xl text-sm font-mono font-bold text-[#0F2A5F] placeholder:text-[#607697] outline-none transition ${
-                    payoutLocked ? 'bg-[#DBEAFE] cursor-not-allowed opacity-80' : 'focus:bg-white focus:shadow-[2px_2px_0px_#0F2A5F]'
-                  }`}
+                  className="w-full pl-8 pr-4 py-2.5 bg-[#f7fcff] border-2 border-[#0F2A5F] rounded-xl text-sm font-mono font-bold text-[#0F2A5F] placeholder:text-[#607697] outline-none transition focus:bg-white focus:shadow-[2px_2px_0px_#0F2A5F]"
                   required
                 />
               </div>
-              {payoutLocked ? (
-                <p className="mt-1 text-[11px] font-bold text-[#607697]">
-                  🔒 Username dikunci otomatis demi konsistensi rekening pencairan dana.
-                </p>
-              ) : (
-                <p className="mt-1 text-[11px] font-medium text-[#526987]">
-                  Tautan donasi publik: <span className="font-mono font-bold text-[#0F2A5F]">localhost:3000/donate/{formData.username || 'namamu'}</span>
-                </p>
-              )}
+              <p className="mt-1 break-all text-[11px] font-medium text-[#526987]">
+                Tautan donasi publik: <span className="font-mono font-bold text-[#0F2A5F]">{SITE_DISPLAY_URL}/donate/{formData.username || 'namamu'}</span>
+              </p>
             </div>
           </div>
 
@@ -485,7 +477,7 @@ function ProfileContent() {
         </div>
 
         {/* Section 2: Media Sosial */}
-        <div ref={socialSectionRef} className="jd-surface p-6 sm:p-7 space-y-4">
+        <div ref={socialSectionRef} className="jd-surface space-y-4 p-4 sm:p-7">
           <div className="border-b-2 border-[#0F2A5F]/10 pb-3">
             <h3 className="font-black text-base text-[#0F2A5F]">Tautan Media Sosial</h3>
             <p className="text-xs font-medium text-[#526987] mt-0.5">
@@ -561,7 +553,7 @@ function ProfileContent() {
         </div>
 
         {/* Section 3: Rekening Pencairan */}
-        <div ref={payoutSectionRef} className="jd-surface p-6 sm:p-7 space-y-4">
+        <div ref={payoutSectionRef} className="jd-surface space-y-4 p-4 sm:p-7">
           <div className="border-b-2 border-[#0F2A5F]/10 pb-3">
             <h3 className="font-black text-base text-[#0F2A5F]">Rekening Pencairan Dana (Payout)</h3>
             <p className="text-xs font-medium text-[#526987] mt-0.5">
@@ -599,7 +591,7 @@ function ProfileContent() {
         </div>
 
         {/* Action Buttons Bar */}
-        <div className="jd-surface p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="jd-surface flex flex-col items-center justify-between gap-4 p-4 sm:flex-row sm:p-5">
           <p className="text-xs font-medium text-[#526987] text-center sm:text-left">
             Pastikan seluruh data sudah benar sebelum menyimpan perubahan.
           </p>

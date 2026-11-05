@@ -10,6 +10,7 @@ import MediaShareSettings from '@/components/organisms/MediaShareSettings';
 import CreatorAppLayout from '@/components/dashboard/CreatorAppLayout';
 import Link from 'next/link';
 import { getStoredUser, validateStoredSession } from '@/utils/sessionManager';
+import { SITE_URL } from '@/lib/site';
 
 export default function OverlayIndexPage() {
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function OverlayIndexPage() {
     return null;
   }
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+  const baseUrl = SITE_URL;
 
   const handleCopy = (text, key) => {
     if (navigator?.clipboard) {

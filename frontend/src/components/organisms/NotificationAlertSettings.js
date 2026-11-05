@@ -290,31 +290,6 @@ export default function NotificationAlertSettings({ username }) {
 
         {appearanceMode === 'custom' && (
         <div className="space-y-4">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-            {colorFields.map(([field, label]) => (
-              <label key={field} className="block">
-                <span className="mb-1.5 block text-xs font-extrabold text-[#0F2A5F]">{label}</span>
-                <span className="flex h-11 items-center gap-2 rounded-xl border-2 border-[#0F2A5F] bg-[#F7FCFF] px-2.5">
-                  <input
-                    type="color"
-                    value={alertStyle[field]}
-                    onChange={(event) => updateStyle(field, event.target.value.toUpperCase())}
-                    className="h-7 w-7 cursor-pointer rounded border-0 bg-transparent p-0"
-                    aria-label={label}
-                  />
-                  <input
-                    type="text"
-                    value={alertStyle[field]}
-                    onChange={(event) => updateStyle(field, event.target.value)}
-                    maxLength={7}
-                    className="min-w-0 flex-1 bg-transparent font-mono text-xs font-bold uppercase text-[#0F2A5F] outline-none"
-                    aria-label={`${label} hex`}
-                  />
-                </span>
-              </label>
-            ))}
-          </div>
-
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <span className="mb-1.5 block text-xs font-extrabold text-[#0F2A5F]">Gambar atau GIF latar</span>
@@ -453,6 +428,31 @@ export default function NotificationAlertSettings({ username }) {
             </div>
           </div>
 
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {colorFields.map(([field, label]) => (
+              <label key={field} className="block">
+                <span className="mb-1.5 block text-xs font-extrabold text-[#0F2A5F]">{label}</span>
+                <span className="flex h-11 items-center gap-2 rounded-xl border-2 border-[#0F2A5F] bg-[#F7FCFF] px-2.5">
+                  <input
+                    type="color"
+                    value={alertStyle[field]}
+                    onChange={(event) => updateStyle(field, event.target.value.toUpperCase())}
+                    className="h-7 w-7 cursor-pointer rounded border-0 bg-transparent p-0"
+                    aria-label={label}
+                  />
+                  <input
+                    type="text"
+                    value={alertStyle[field]}
+                    onChange={(event) => updateStyle(field, event.target.value)}
+                    maxLength={7}
+                    className="min-w-0 flex-1 bg-transparent font-mono text-xs font-bold uppercase text-[#0F2A5F] outline-none"
+                    aria-label={`${label} hex`}
+                  />
+                </span>
+              </label>
+            ))}
+          </div>
+
           <div className="rounded-2xl border-2 border-[#0F2A5F]/15 bg-[#F7FCFF] p-4">
             <div className="mb-3">
               <p className="text-xs font-extrabold text-[#0F2A5F]">Foto tambahan</p>
@@ -560,7 +560,7 @@ export default function NotificationAlertSettings({ username }) {
         </div>
         )}
 
-        <div className={`relative flex aspect-[720/220] w-full items-center justify-center overflow-hidden rounded-[26px] border-[4px] p-4 text-center shadow-[0_8px_22px_rgba(15,42,95,0.12)] ${appearanceMode === 'default' ? 'bg-[linear-gradient(45deg,#EFF6FF_25%,transparent_25%,transparent_75%,#EFF6FF_75%),linear-gradient(45deg,#EFF6FF_25%,transparent_25%,transparent_75%,#EFF6FF_75%)] bg-[length:22px_22px] bg-[position:0_0,11px_11px]' : ''}`} ref={previewRef} style={previewStyle}>
+        <div className={`relative flex aspect-[720/220] min-h-[120px] w-full items-center justify-center overflow-hidden rounded-[18px] border-[3px] p-2 text-center shadow-[0_8px_22px_rgba(15,42,95,0.12)] sm:min-h-0 sm:rounded-[26px] sm:border-[4px] sm:p-4 ${appearanceMode === 'default' ? 'bg-[linear-gradient(45deg,#EFF6FF_25%,transparent_25%,transparent_75%,#EFF6FF_75%),linear-gradient(45deg,#EFF6FF_25%,transparent_25%,transparent_75%,#EFF6FF_75%)] bg-[length:22px_22px] bg-[position:0_0,11px_11px]' : ''}`} ref={previewRef} style={previewStyle}>
           {previewImageStyle && <div className="absolute inset-0" style={previewImageStyle} />}
           {displayedStyle.decorations.map((decoration, index) => (
             <img
@@ -585,10 +585,10 @@ export default function NotificationAlertSettings({ username }) {
             />
           ))}
           <AlertParticles type={displayedStyle.particleStyle} color={displayedStyle.amountColor} />
-          <div className="relative z-20">
-            <p className="text-5xl font-black leading-none sm:text-7xl" style={getAmountStyle(displayedStyle.amountStyle, displayedStyle.amountColor, displayedStyle.textColor)}>Rp 50.000</p>
-            <p className="mt-3 text-2xl font-black leading-tight sm:text-3xl" style={{ color: displayedStyle.textColor }}>Nama Donatur</p>
-            <p className="mt-3 text-base font-semibold sm:text-xl" style={{ color: displayedStyle.textColor, opacity: 0.9 }}>{displayedStyle.messagePrefix}Hallo bang{displayedStyle.messageSuffix}</p>
+          <div className="relative z-20 min-w-0 max-w-full">
+            <p className="whitespace-nowrap text-3xl font-black leading-none sm:text-7xl" style={getAmountStyle(displayedStyle.amountStyle, displayedStyle.amountColor, displayedStyle.textColor)}>Rp 50.000</p>
+            <p className="mt-1 truncate text-base font-black leading-tight sm:mt-3 sm:text-3xl" style={{ color: displayedStyle.textColor }}>Nama Donatur</p>
+            <p className="mt-1 truncate text-xs font-semibold sm:mt-3 sm:text-xl" style={{ color: displayedStyle.textColor, opacity: 0.9 }}>{displayedStyle.messagePrefix}Hallo bang{displayedStyle.messageSuffix}</p>
           </div>
         </div>
       </div>
@@ -598,7 +598,7 @@ export default function NotificationAlertSettings({ username }) {
           type="button"
           onClick={handleSave}
           disabled={saving}
-          className="rounded-xl border-2 border-[#0F2A5F] bg-[#2563EB] px-5 py-2.5 text-xs font-extrabold text-white shadow-[2px_2px_0px_#0F2A5F] transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50"
+          className="w-full rounded-xl border-2 border-[#0F2A5F] bg-[#2563EB] px-5 py-2.5 text-xs font-extrabold text-white shadow-[2px_2px_0px_#0F2A5F] transition hover:bg-[#1D4ED8] disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
         >
           {saving ? 'Menyimpan...' : 'Simpan tampilan'}
         </button>

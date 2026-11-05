@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import Link from "next/link";
 import toast from 'react-hot-toast';
+import RecaptchaCheckbox from '@/components/atoms/RecaptchaCheckbox';
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -14,6 +15,8 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [recaptchaResetKey, setRecaptchaResetKey] = useState(0);
   const [checking, setChecking] = useState(true);
   const router = useRouter();
 
@@ -62,8 +65,14 @@ export default function LoginPage() {
       return;
     }
 
+    if (!recaptchaToken) {
+      toast.error('Centang reCAPTCHA terlebih dahulu!');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const res = await axios.post("/api/auth/login", { email, password, remember: rememberBrowser });
+      const res = await axios.post("/api/auth/login", { email, password, remember: rememberBrowser, recaptchaToken });
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
       localStorage.setItem("token_expires_at", String(Date.now() + (res.data.expires_in * 1000)));
@@ -76,6 +85,14 @@ export default function LoginPage() {
         window.location.href = "/dashboard";
       }
     } catch (err) {
+      setRecaptchaToken('');
+      setRecaptchaResetKey((current) => current + 1);
+
+      if (err.response?.data?.verification_required) {
+        router.push(`/verify-email?email=${encodeURIComponent(err.response.data.email || email)}`);
+        return;
+      }
+
       const errorMessage = err.response?.data?.error || "Login gagal. Periksa kembali email dan password.";
       setError(errorMessage);
       toast.error(errorMessage);
@@ -89,9 +106,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="jd-app-shell flex flex-col items-center justify-center text-[#0F2A5F] font-sans antialiased p-4 sm:p-6">
+    <div className="jd-app-shell jd-auth-shell flex flex-col items-center justify-center text-[#0F2A5F] font-sans antialiased p-4 sm:p-6">
       {/* Kartu Login Sederhana & Bersih */}
-      <div className="jd-surface w-full max-w-md p-6 sm:p-8">
+      <div className="jd-surface jd-auth-card w-full max-w-md p-6 sm:p-8">
         
         {/* Header Bersih */}
         <div className="flex flex-col items-center text-center">
@@ -139,7 +156,7 @@ export default function LoginPage() {
 
           {/* Password dengan Show/Hide */}
           <div>
-            <div className="flex items-center justify-between mb-1">
+            <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wide text-[#0F2A5F]">
                 Password
               </label>
@@ -195,10 +212,12 @@ export default function LoginPage() {
             </span>
           </label>
 
+          <RecaptchaCheckbox onChange={setRecaptchaToken} resetKey={recaptchaResetKey} />
+
           {/* Tombol Masuk */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !recaptchaToken}
             className="jd-btn-primary w-full py-2.5 text-sm font-extrabold disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 mt-1"
           >
             {loading ? (

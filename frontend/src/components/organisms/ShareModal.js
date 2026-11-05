@@ -3,15 +3,14 @@ import Modal from '../atoms/Modal';
 import Button from '../atoms/Button';
 import toast from 'react-hot-toast';
 import axios from 'axios';
+import { SITE_URL } from '@/lib/site';
 
 const ShareModal = ({ isOpen, onClose, creatorUsername, donationId, onShare }) => {
   const [copying, setCopying] = useState(false);
   const [sharing, setSharing] = useState(false);
 
   // Generate donation URL
-  const donationUrl = typeof window !== 'undefined' 
-    ? `${window.location.origin}/donate/${creatorUsername}`
-    : '';
+  const donationUrl = creatorUsername ? `${SITE_URL}/donate/${creatorUsername}` : '';
 
   // Track share analytics
   const trackShare = async (platform) => {

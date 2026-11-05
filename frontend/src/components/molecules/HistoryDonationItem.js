@@ -14,8 +14,8 @@ const HistoryDonationItem = ({
   const isMediaShare = donation.mediaShareRequest?.enabled;
 
   return (
-    <div className={`px-5 py-4 hover:bg-[#f7fcff] transition-colors ${className}`}>
-      <div className="flex items-start gap-3.5">
+    <div className={`px-4 py-4 transition-colors hover:bg-[#f7fcff] sm:px-5 ${className}`}>
+      <div className="flex items-start gap-3 sm:gap-3.5">
         <Avatar name={donation.name} size="md" />
 
         <div className="flex-1 min-w-0">
@@ -29,7 +29,7 @@ const HistoryDonationItem = ({
                 </span>
               )}
             </div>
-            <div className="shrink-0 text-right">
+            <div className="shrink-0 text-left sm:text-right">
               <span className="block text-base font-black text-[#0F2A5F]">{formatRupiah(donation.netAmount ?? donation.amount)}</span>
               {(donation.serviceFeeAmount || 0) > 0 && (
                 <span className="block text-[11px] font-semibold text-[#64748B]">Masuk {formatRupiah(donation.amount)} · Potongan {formatRupiah(donation.serviceFeeAmount)}</span>

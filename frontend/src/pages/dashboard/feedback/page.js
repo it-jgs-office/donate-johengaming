@@ -223,7 +223,7 @@ export default function CreatorFeedbackPage() {
             </div>
 
             <div className="flex justify-end border-t border-[#e1e7ef] pt-5">
-              <button type="submit" disabled={submitting} className="jd-btn-primary min-w-40 px-5 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={submitting} className="jd-btn-primary w-full px-5 py-2.5 text-sm font-semibold disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:min-w-40">
                 {submitting ? 'Mengirim...' : 'Kirim ke Admin'}
               </button>
             </div>

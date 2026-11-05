@@ -15,7 +15,14 @@ class SystemController extends Controller
     public function creators(): JsonResponse
     {
         $creators = User::where('role', 'creator')->where('is_active', true)->whereNotNull('username')->latest()->limit(100)->get()
-            ->map(fn ($user) => ['username' => $user->username, 'displayName' => $user->display_name, 'bio' => $user->bio, 'profileImage' => $user->profile_image_path ? url('/api/user/profile-image/'.$user->id) : null]);
+            ->map(fn (User $user) => [
+                'username' => $user->username,
+                'displayName' => $user->display_name,
+                'bio' => $user->bio,
+                'profileImage' => $user->profile_image_path
+                    ? url('/api/user/profile-image/'.$user->id).'?v='.($user->updated_at?->timestamp ?? 0)
+                    : null,
+            ]);
 
         return response()->json(['success' => true, 'creators' => $creators]);
     }

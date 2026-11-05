@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
@@ -23,7 +24,12 @@ class AuthController extends Controller
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'string', 'min:6'],
             'description' => ['nullable', 'string', 'max:500'],
+            'recaptchaToken' => ['required', 'string'],
         ]);
+
+        if (! $this->validRecaptcha($request, $data['recaptchaToken'])) {
+            return response()->json(['error' => 'Verifikasi reCAPTCHA gagal. Silakan centang kembali.'], 422);
+        }
 
         $user = User::create([
             'name' => $data['displayName'],
@@ -40,7 +46,24 @@ class AuthController extends Controller
             'stats' => [],
         ]);
 
-        return response()->json(['success' => true, 'user' => $user->toFrontendArray()], 201);
+        try {
+            $this->sendVerificationCode($user);
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return response()->json([
+                'success' => false,
+                'error' => 'Akun berhasil dibuat, tetapi kode verifikasi gagal dikirim. Silakan masuk untuk mengirim ulang kode.',
+                'verification_required' => true,
+                'email' => $user->email,
+            ], 503);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kode verifikasi telah dikirim ke email Anda.',
+            'email' => $user->email,
+        ], 201);
     }
 
     public function login(Request $request): JsonResponse
@@ -49,7 +72,13 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
             'remember' => ['sometimes', 'boolean'],
+            'recaptchaToken' => ['required', 'string'],
         ]);
+
+        if (! $this->validRecaptcha($request, $credentials['recaptchaToken'])) {
+            return response()->json(['error' => 'Verifikasi reCAPTCHA gagal. Silakan centang kembali.'], 422);
+        }
+
         $user = User::where('email', strtolower($credentials['email']))->first();
 
         if (! $user || ! Hash::check($credentials['password'], $user->password) || ! $user->is_active) {
@@ -85,6 +114,36 @@ class AuthController extends Controller
         $username = strtolower((string) $request->query('username'));
 
         return response()->json(['available' => $username !== '' && ! User::where('username', $username)->exists()]);
+    }
+
+    public function verifyEmail(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+            'token' => ['required', 'digits:6'],
+        ]);
+        $user = User::where('email', strtolower($data['email']))->first();
+
+        if (! $user || ! $this->validVerificationToken($user->email, $data['token'])) {
+            return response()->json(['error' => 'Kode verifikasi tidak valid atau kedaluwarsa.'], 422);
+        }
+
+        $user->forceFill(['email_verified_at' => now()])->save();
+        DB::table('email_verification_tokens')->where('email', $user->email)->delete();
+
+        return response()->json(['success' => true, 'message' => 'Email berhasil diverifikasi. Silakan masuk.']);
+    }
+
+    public function resendVerificationEmail(Request $request): JsonResponse
+    {
+        $data = $request->validate(['email' => ['required', 'email']]);
+        $user = User::where('email', strtolower($data['email']))->first();
+
+        if ($user && ! $user->email_verified_at) {
+            $this->sendVerificationCode($user);
+        }
+
+        return response()->json(['success' => true, 'message' => 'Jika email terdaftar dan belum diverifikasi, kode baru telah dikirim.']);
     }
 
     public function forgotPassword(Request $request): JsonResponse
@@ -127,6 +186,53 @@ class AuthController extends Controller
         $record = DB::table('password_reset_tokens')->where('email', strtolower($email))->first();
 
         return $record && now()->diffInMinutes($record->created_at) <= 15 && Hash::check($token, $record->token);
+    }
+
+    private function sendVerificationCode(User $user): void
+    {
+        $token = (string) random_int(100000, 999999);
+
+        DB::table('email_verification_tokens')->updateOrInsert(
+            ['email' => $user->email],
+            ['token' => Hash::make($token), 'created_at' => now()],
+        );
+
+        Mail::raw(
+            "Kode verifikasi Johen Gaming Anda: {$token}\n\nKode berlaku selama 15 menit.",
+            fn ($mail) => $mail->to($user->email)->subject('Kode Verifikasi Johen Gaming'),
+        );
+    }
+
+    private function validVerificationToken(string $email, string $token): bool
+    {
+        $record = DB::table('email_verification_tokens')->where('email', strtolower($email))->first();
+
+        return $record && now()->diffInMinutes($record->created_at) <= 15 && Hash::check($token, $record->token);
+    }
+
+    private function validRecaptcha(Request $request, string $token): bool
+    {
+        $secret = config('services.recaptcha.secret');
+
+        if (! is_string($secret) || $secret === '') {
+            return false;
+        }
+
+        try {
+            $response = Http::asForm()
+                ->timeout(8)
+                ->post('https://www.google.com/recaptcha/api/siteverify', [
+                    'secret' => $secret,
+                    'response' => $token,
+                    'remoteip' => $request->ip(),
+                ]);
+
+            return $response->successful() && $response->json('success') === true;
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return false;
+        }
     }
 
     private function defaultDonationSettings(): array

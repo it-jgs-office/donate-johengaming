@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/health', fn () => ['status' => 'ok', 'service' => 'johen-donate-api']);
 
 Route::prefix('auth')->group(function () {
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
+    Route::post('/verify-email', [AuthController::class, 'verifyEmail'])->middleware('throttle:10,1');
+    Route::post('/resend-verification-email', [AuthController::class, 'resendVerificationEmail'])->middleware('throttle:3,1');
     Route::post('/login', [AuthController::class, 'login']);
     Route::get('/check-username', [AuthController::class, 'checkUsername']);
     Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);

@@ -338,7 +338,7 @@ export default function PayoutPage() {
 
       {/* Payout History */}
       <div className="jd-surface overflow-hidden">
-        <div className="px-5 sm:px-6 py-4 border-b-2 border-[#0F2A5F] bg-[#f7fcff] flex items-center justify-between">
+        <div className="flex flex-col items-start gap-3 border-b-2 border-[#0F2A5F] bg-[#f7fcff] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
           <div>
             <h3 className="font-black text-base text-[#0F2A5F]">Riwayat Pencairan</h3>
             <p className="text-xs font-medium text-[#526987] mt-0.5">Seluruh pengajuan penarikan saldo</p>
@@ -360,7 +360,7 @@ export default function PayoutPage() {
           </div>
         ) : payouts.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-left">
+            <table className="min-w-[760px] w-full text-left">
               <thead>
                 <tr className="border-b-2 border-[#0F2A5F] bg-[#f7fcff] text-xs font-black text-[#0F2A5F]">
                   <th className="px-5 py-3.5">ID & Waktu</th>

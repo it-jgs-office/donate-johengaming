@@ -8,6 +8,7 @@ import Text from '../atoms/Text';
 import Button from '../atoms/Button';
 import PayoutFields from '../molecules/PayoutFields';
 import ImageCropModal from '../molecules/ImageCropModal';
+import { SITE_DISPLAY_URL } from '@/lib/site';
 
 const ProfileModal = ({
   showProfile,
@@ -133,21 +134,16 @@ const ProfileModal = ({
                 </label>
                 <Input 
                   value={profileFormData.username || ''} 
-                  onChange={payoutLocked ? undefined : (e) => onFormDataChange({ ...profileFormData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') })}
-                  disabled={payoutLocked} 
+                  onChange={(e) => onFormDataChange({ ...profileFormData, username: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') })}
                   placeholder="Username untuk tautan donasi" 
                 />
                 {!profileFormData.username || profileFormData.username === '' ? (
                   <p className="mt-1 text-xs font-bold text-amber-700">
                     Username belum diisi. Isi username untuk mengaktifkan tautan donasimu!
                   </p>
-                ) : payoutLocked ? (
-                  <p className="mt-1 text-xs text-[#526987]">
-                    Username terkunci setelah data rekening payout tersimpan.
-                  </p>
                 ) : (
                   <p className="mt-1 text-xs text-[#526987]">
-                    Tautan donasimu: localhost:3000/donate/{profileFormData.username}
+                    Tautan donasimu: {SITE_DISPLAY_URL}/donate/{profileFormData.username}
                   </p>
                 )}
               </div>

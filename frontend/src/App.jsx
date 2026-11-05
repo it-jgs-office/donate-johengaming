@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Home from './pages/page.js'
 import Login from './pages/login/page.js'
 import Register from './pages/creator/register/page.js'
+import VerifyEmail from './pages/verify-email/page.js'
 import ForgotPassword from './pages/forgot-password/page.js'
 import ResetPassword from './pages/reset-password/page.js'
 import Dashboard from './pages/dashboard/page.js'
@@ -33,6 +34,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Navigate to="/creator/register" replace />} />
         <Route path="/creator/register" element={<Register />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />

@@ -13,6 +13,7 @@ import { filterMessage } from '@/utils/messageFilter';
 import { getTodayDonations } from '@/utils/dateUtils';
 import CreatorAppLayout from '@/components/dashboard/CreatorAppLayout';
 import { subscribeToCreatorDonations } from '@/lib/pusher';
+import { SITE_DISPLAY_URL, SITE_URL } from '@/lib/site';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -415,7 +416,7 @@ export default function Dashboard() {
     return true;
   });
 
-  const baseUrl = typeof window !== 'undefined' ? window.location.origin : 'http://localhost:3000';
+  const baseUrl = SITE_URL;
 
   return (
     <CreatorAppLayout user={user} onLogout={handleLogout}>
@@ -433,7 +434,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => router.push('/dashboard/profile')}
-            className="shrink-0 cursor-pointer rounded-lg bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8]"
+            className="w-full shrink-0 cursor-pointer rounded-lg bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8] sm:w-auto"
           >
             Setup Sekarang
           </button>
@@ -453,7 +454,7 @@ export default function Dashboard() {
           </div>
           <button
             onClick={() => router.push('/dashboard/profile?section=payout')}
-            className="shrink-0 cursor-pointer rounded-lg bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8]"
+            className="w-full shrink-0 cursor-pointer rounded-lg bg-[#2563EB] px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8] sm:w-auto"
           >
             Isi Rekening
           </button>
@@ -467,9 +468,9 @@ export default function Dashboard() {
             <p className="mb-2 text-xs font-semibold uppercase tracking-[0.06em] text-[#8392AB]">Tautan Donasi</p>
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
               <div className="flex flex-1 select-all items-center overflow-hidden rounded-lg border border-[#D2D6DA] bg-[#F8F9FA] px-4 py-2.5 text-sm font-medium text-[#10264D]">
-                <span className="truncate">localhost:3000/donate/{user?.username || 'namamu'}</span>
+                <span className="truncate">{SITE_DISPLAY_URL}/donate/{user?.username || 'namamu'}</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
                 <button
                   type="button"
                   onClick={() => {
@@ -477,7 +478,7 @@ export default function Dashboard() {
                     navigator.clipboard.writeText(url);
                     toast.success('Tautan disalin!');
                   }}
-                  className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-[#2563EB] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8]"
+                  className="flex shrink-0 cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-[#2563EB] px-4 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-[#1D4ED8]"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
@@ -500,8 +501,8 @@ export default function Dashboard() {
 
           {/* Status Toggles */}
           {user?.username && (
-            <div className="flex w-full flex-wrap items-center gap-6 border-t border-slate-200 pt-4 lg:w-auto lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-              <label className="flex items-center gap-3 cursor-pointer">
+            <div className="grid w-full grid-cols-1 gap-3 border-t border-slate-200 pt-4 sm:grid-cols-3 lg:flex lg:w-auto lg:flex-wrap lg:items-center lg:gap-6 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
+              <label className="flex w-full cursor-pointer items-center justify-between gap-3 lg:w-auto">
                 <div className="flex flex-col">
                   <span className="text-xs font-extrabold text-[#526987]">Donasi</span>
                   <span className={`text-xs font-semibold ${donationEnabled ? 'text-emerald-700' : 'text-[#607697]'}`}>
@@ -525,7 +526,7 @@ export default function Dashboard() {
                 </button>
               </label>
 
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="flex w-full cursor-pointer items-center justify-between gap-3 lg:w-auto">
                 <div className="flex flex-col">
                   <span className="text-xs font-extrabold text-[#526987]">Media Share</span>
                   <span className={`text-xs font-semibold ${mediaShareEnabled ? 'text-blue-700' : 'text-[#607697]'}`}>
@@ -549,7 +550,7 @@ export default function Dashboard() {
                 </button>
               </label>
 
-              <label className="flex items-center gap-3 cursor-pointer">
+              <label className="flex w-full cursor-pointer items-center justify-between gap-3 lg:w-auto">
                 <div className="flex flex-col">
                   <span className="text-xs font-extrabold text-[#526987]">Auto Baca</span>
                   <span className={`text-xs font-semibold ${ttsEnabled ? 'text-[#1D4ED8]' : 'text-[#607697]'}`}>
@@ -603,7 +604,7 @@ export default function Dashboard() {
           </div>
 
           {/* Filter Tabs */}
-          <div className="flex shrink-0 items-center gap-1 rounded-lg bg-[#F1F3F5] p-1">
+          <div className="flex w-full shrink-0 items-center gap-1 overflow-x-auto rounded-lg bg-[#F1F3F5] p-1 sm:w-auto">
             {[
               { key: 'ALL', label: `Semua (${donations.length})` },
               { key: 'DONATION', label: 'Saweran' },
@@ -613,7 +614,7 @@ export default function Dashboard() {
                 key={tab.key}
                 type="button"
                 onClick={() => setFilterType(tab.key)}
-                className={`cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition ${
+                className={`shrink-0 cursor-pointer rounded-md px-3 py-1.5 text-xs font-semibold transition ${
                   filterType === tab.key
                     ? 'bg-white text-[#2563EB] shadow-sm'
                     : 'text-[#67748E] hover:text-[#10264D]'
@@ -679,7 +680,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Amount & Actions */}
-                    <div className="flex items-center gap-3 shrink-0 sm:ml-4">
+                    <div className="flex w-full shrink-0 items-center justify-between gap-3 sm:ml-4 sm:w-auto sm:justify-start">
                       <span className="text-base font-bold text-[#10264D]">
                         {formatRupiah(donation.amount)}
                       </span>
@@ -704,7 +705,7 @@ export default function Dashboard() {
             })}
           </div>
         ) : (
-          <div className="p-12 text-center">
+          <div className="px-5 py-10 text-center sm:p-12">
             <img
               src="/logo-blue.png"
               alt="Logo Johen Donate"

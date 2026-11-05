@@ -8,4 +8,4 @@ Frontend React + Vite hasil pemisahan dari aplikasi Next.js. Tampilan, halaman, 
 2. Isi `VITE_MIDTRANS_CLIENT_KEY`.
 3. Jalankan `npm install` lalu `npm run dev`.
 
-Backend default berjalan di `http://localhost:8000` dan frontend di `http://localhost:3000`.
+Backend default berjalan di `http://localhost:8001` dan frontend di `http://localhost:3000`.

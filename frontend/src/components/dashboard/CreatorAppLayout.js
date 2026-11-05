@@ -59,11 +59,11 @@ export default function CreatorAppLayout({ user, onLogout, children }) {
   const profileName = user?.displayName || user?.username || 'Kreator';
 
   return (
-    <div className="jd-app-shell jd-creator-shell flex font-sans text-[#10264D] antialiased">
-      <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/15 bg-[#0F2A5F]/95 px-4 text-white backdrop-blur-xl lg:hidden">
+    <div className="jd-app-shell jd-creator-shell flex w-full overflow-x-hidden font-sans text-[#10264D] antialiased">
+      <header className="fixed inset-x-0 top-0 z-40 flex h-16 items-center justify-between border-b border-white/15 bg-[#0F2A5F]/95 px-3 text-white backdrop-blur-xl sm:px-4 lg:hidden">
         <Link href="/dashboard" className="flex items-center gap-2.5">
           <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white"><img src="/logo-blue.png" alt="Johen Donate" className="h-7 w-7 object-contain" /></span>
-          <div><p className="text-sm font-bold">Johen Donate</p><p className="text-[10px] text-blue-100">Creator dashboard</p></div>
+          <div><p className="text-sm font-bold">Johen Donate</p><p className="text-[10px] text-blue-100">{pageTitle}</p></div>
         </Link>
         <button type="button" onClick={() => setSidebarOpen((value) => !value)} className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 ring-1 ring-white/20" aria-label="Buka navigasi">
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={sidebarOpen ? 'M6 18 18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'} /></svg>
@@ -72,7 +72,7 @@ export default function CreatorAppLayout({ user, onLogout, children }) {
 
       {sidebarOpen && <button type="button" aria-label="Tutup navigasi" className="fixed inset-0 z-40 bg-slate-950/35 backdrop-blur-sm lg:hidden" onClick={() => setSidebarOpen(false)} />}
 
-      <aside className={`fixed bottom-4 left-4 top-4 z-50 flex w-[264px] flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#2B5BAF] via-[#1E478A] to-[#0F2A5F] text-white shadow-[0_20px_45px_rgba(15,42,95,0.28)] transition-transform duration-200 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-[calc(100%+2rem)]'}`}>
+      <aside className={`fixed bottom-3 left-3 top-3 z-50 flex w-[calc(100%-1.5rem)] max-w-[264px] flex-col overflow-hidden rounded-2xl bg-gradient-to-b from-[#2B5BAF] via-[#1E478A] to-[#0F2A5F] text-white shadow-[0_20px_45px_rgba(15,42,95,0.28)] transition-transform duration-200 lg:bottom-4 lg:left-4 lg:top-4 lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-[calc(100%+2rem)]'}`}>
         <div className="flex min-h-20 items-center gap-3 border-b border-white/15 px-6">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white shadow-sm"><img src="/logo-blue.png" alt="Johen Donate" className="h-8 w-8 object-contain" /></span>
           <div><h1 className="text-sm font-bold">Johen Donate</h1><p className="mt-0.5 text-[11px] text-blue-100">Creator dashboard</p></div>
@@ -98,14 +98,14 @@ export default function CreatorAppLayout({ user, onLogout, children }) {
         </div>
       </aside>
 
-      <main id="main-content" className="min-w-0 flex-grow pt-16 lg:pl-[296px] lg:pt-0">
+      <main id="main-content" className="min-w-0 w-full max-w-full flex-grow overflow-x-hidden pt-16 lg:pl-[296px] lg:pt-0">
         {showShellHeader && (
-          <header className="flex h-24 items-center justify-between px-5 text-white sm:px-7 lg:h-28 lg:px-8">
+          <header className="flex h-20 items-center justify-between px-4 text-white sm:h-24 sm:px-7 lg:h-28 lg:px-8">
             <div><div className="flex items-center gap-2 text-xs font-medium text-blue-100"><span>Kreator</span><span>/</span><span>{pageTitle}</span></div><h1 className="mt-1 text-xl font-bold tracking-tight">{pageTitle}</h1></div>
             <div className="hidden items-center gap-3 sm:flex"><div className="text-right"><p className="text-xs font-semibold">{profileName}</p><p className="mt-0.5 text-[11px] text-blue-100">@{user?.username || 'kreator'}</p></div><div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-white/15 text-sm font-bold ring-1 ring-white/25">{user?.profileImage || user?.profileImageUrl ? <img src={user.profileImage || user.profileImageUrl} alt={profileName} className="h-full w-full object-cover" /> : profileName.charAt(0).toUpperCase()}</div></div>
           </header>
         )}
-        <div className={`mx-auto min-h-[calc(100vh-7rem)] max-w-[1600px] space-y-6 px-4 pb-8 sm:px-7 lg:px-8 ${showShellHeader ? '' : 'pt-6 lg:pt-8'}`}>{children}</div>
+        <div className={`mx-auto min-h-[calc(100dvh-7rem)] max-w-[1600px] space-y-4 px-3 pb-6 sm:space-y-6 sm:px-7 sm:pb-8 lg:px-8 ${showShellHeader ? '' : 'pt-4 sm:pt-6 lg:pt-8'}`}>{children}</div>
       </main>
     </div>
   );

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { SITE_DISPLAY_URL } from '@/lib/site';
+import RecaptchaCheckbox from '@/components/atoms/RecaptchaCheckbox';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
@@ -21,6 +23,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [recaptchaToken, setRecaptchaToken] = useState('');
+  const [recaptchaResetKey, setRecaptchaResetKey] = useState(0);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -89,14 +93,28 @@ export default function Register() {
       return;
     }
 
+    if (!recaptchaToken) {
+      toast.error('Centang reCAPTCHA terlebih dahulu!');
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.post('/api/auth/register', formData);
+      const response = await axios.post('/api/auth/register', { ...formData, recaptchaToken });
       
       if (response.data.success) {
-        toast.success('Pendaftaran berhasil! Silakan masuk.');
-        router.push('/login');
+        toast.success('Kode verifikasi telah dikirim ke email Anda.');
+        router.push(`/verify-email?email=${encodeURIComponent(response.data.email || formData.email)}`);
       }
     } catch (error) {
+      setRecaptchaToken('');
+      setRecaptchaResetKey((current) => current + 1);
+
+      if (error.response?.data?.verification_required) {
+        router.push(`/verify-email?email=${encodeURIComponent(error.response.data.email || formData.email)}`);
+        return;
+      }
+
       const errorMessage = error.response?.data?.error || 'Pendaftaran gagal. Silakan coba lagi.';
       setError(errorMessage);
       toast.error(errorMessage);
@@ -106,9 +124,9 @@ export default function Register() {
   };
 
   return (
-    <div className="jd-app-shell flex flex-col items-center justify-center text-[#0F2A5F] font-sans antialiased p-4 sm:p-6">
+    <div className="jd-app-shell jd-auth-shell flex flex-col items-center justify-center text-[#0F2A5F] font-sans antialiased p-4 sm:p-6">
       {/* Kartu Register Sederhana & Bersih */}
-      <div className="jd-surface w-full max-w-md p-6 sm:p-8">
+      <div className="jd-surface jd-auth-card w-full max-w-md p-6 sm:p-8">
         
         {/* Header Bersih */}
         <div className="flex flex-col items-center text-center">
@@ -155,8 +173,8 @@ export default function Register() {
               />
             </div>
             {formData.username && (
-              <p className="mt-1 text-[11px] font-mono text-[#526987]">
-                localhost:3000/donate/{formData.username}
+              <p className="mt-1 break-all font-mono text-[11px] text-[#526987]">
+                {SITE_DISPLAY_URL}/donate/{formData.username}
               </p>
             )}
           </div>
@@ -198,7 +216,7 @@ export default function Register() {
 
           {/* Password dengan Show/Hide */}
           <div>
-            <div className="flex items-center justify-between mb-1">
+            <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wide text-[#0F2A5F]">
                 Password <span className="text-red-500">*</span>
               </label>
@@ -238,10 +256,12 @@ export default function Register() {
             </div>
           </div>
 
+          <RecaptchaCheckbox onChange={setRecaptchaToken} resetKey={recaptchaResetKey} />
+
           {/* Tombol Submit */}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || !recaptchaToken}
             className="jd-btn-primary w-full py-2.5 text-sm font-extrabold disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2 mt-2"
           >
             {loading ? (

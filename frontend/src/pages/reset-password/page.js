@@ -71,43 +71,43 @@ export default function ResetPasswordPage() {
   };
 
   return (
-    <div className="jd-public-page flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      <div className="jd-surface w-full max-w-md space-y-8 p-6 sm:p-8">
+    <div className="jd-app-shell jd-auth-shell flex min-h-screen items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="jd-surface jd-auth-card w-full max-w-md space-y-8 p-6 sm:p-8">
         <div>
-          <h2 className="mt-2 text-center text-2xl sm:text-3xl font-extrabold text-[#2563EB] font-mono">Reset Password</h2>
-          <p className="mt-2 text-center text-xs sm:text-sm text-[#2563EB]/80">
+          <h2 className="mt-2 text-center text-2xl font-semibold tracking-tight text-[#10264D] sm:text-3xl">Reset Password</h2>
+          <p className="mt-2 text-center text-xs text-[#64748B] sm:text-sm">
             {step === 'otp' ? 'Masukkan kode OTP yang dikirim ke email Anda.' : 'Masukkan password baru untuk akun Anda.'}
           </p>
         </div>
 
         {email && (
-          <div className="flex items-center gap-2 bg-[#0F2A5F] border border-[#2563EB]/30 rounded-md px-3 py-2 mb-2">
-            <svg className="h-5 w-5 text-[#2563EB] flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="mb-2 flex flex-wrap items-center gap-2 rounded-lg border border-[#BFDBFE] bg-[#EFF6FF] px-3 py-2">
+            <svg className="h-5 w-5 flex-shrink-0 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
             </svg>
-            <span className="text-xs font-semibold text-[#2563EB] font-mono uppercase tracking-wide">Email Tujuan Reset:</span>
-            <span className="text-sm font-mono text-[#2563EB] break-all">{email}</span>
-            <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse ml-1"></span>
+            <span className="text-xs font-semibold uppercase tracking-wide text-[#1D4ED8]">Email tujuan reset:</span>
+            <span className="min-w-0 flex-1 break-all text-sm text-[#10264D]">{email}</span>
+            <span className="ml-1 h-2 w-2 rounded-full bg-green-400 animate-pulse"></span>
           </div>
         )}
 
         {step === 'otp' ? (
           <form className="mt-8 space-y-6" onSubmit={handleOtpSubmit}>
             <div>
-              <label className="block text-sm font-medium text-[#2563EB] font-mono mb-2">Kode OTP</label>
+              <label className="mb-2 block text-sm font-medium text-[#10264D]">Kode OTP</label>
               <input 
                 type="text" 
                 value={token} 
                 onChange={(e) => setToken(e.target.value)} 
                 required 
-                className="w-full px-3 py-3 border border-[#2563EB] placeholder-[#2563EB]/50 text-[#2563EB] bg-[#0F2A5F] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] text-sm font-mono" 
+                className="jd-input w-full px-3 py-3 text-sm"
                 placeholder="Masukkan 6 digit kode OTP"
                 maxLength={6}
               />
             </div>
 
             <div>
-              <button type="submit" disabled={loading} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-[#0F2A5F] bg-[#2563EB] hover:bg-[#60A5FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563EB] disabled:opacity-50 font-mono transition-all duration-200">
+              <button type="submit" disabled={loading} className="jd-btn-primary group relative flex w-full justify-center px-4 py-3 text-sm font-semibold disabled:opacity-50">
                 {loading ? 'Memverifikasi...' : 'Verifikasi OTP'}
               </button>
             </div>
@@ -115,31 +115,31 @@ export default function ResetPasswordPage() {
         ) : (
           <form className="mt-8 space-y-6" onSubmit={handlePasswordSubmit}>
             <div>
-              <label className="block text-sm font-medium text-[#2563EB] font-mono mb-2">Password Baru</label>
+              <label className="mb-2 block text-sm font-medium text-[#10264D]">Password Baru</label>
               <input 
                 type="password" 
                 value={password} 
                 onChange={(e) => setPassword(e.target.value)} 
                 required 
-                className="w-full px-3 py-3 border border-[#2563EB] placeholder-[#2563EB]/50 text-[#2563EB] bg-[#0F2A5F] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] text-sm font-mono" 
+                className="jd-input w-full px-3 py-3 text-sm"
                 placeholder="Minimal 6 karakter"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-[#2563EB] font-mono mb-2">Konfirmasi Password</label>
+              <label className="mb-2 block text-sm font-medium text-[#10264D]">Konfirmasi Password</label>
               <input 
                 type="password" 
                 value={confirm} 
                 onChange={(e) => setConfirm(e.target.value)} 
                 required 
-                className="w-full px-3 py-3 border border-[#2563EB] placeholder-[#2563EB]/50 text-[#2563EB] bg-[#0F2A5F] rounded-md focus:outline-none focus:ring-2 focus:ring-[#2563EB] focus:border-[#2563EB] text-sm font-mono" 
+                className="jd-input w-full px-3 py-3 text-sm"
                 placeholder="Ulangi password baru"
               />
             </div>
 
             <div>
-              <button type="submit" disabled={loading} className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-[#0F2A5F] bg-[#2563EB] hover:bg-[#60A5FA] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2563EB] disabled:opacity-50 font-mono transition-all duration-200">
+              <button type="submit" disabled={loading} className="jd-btn-primary group relative flex w-full justify-center px-4 py-3 text-sm font-semibold disabled:opacity-50">
                 {loading ? 'Menyimpan...' : 'Simpan Password Baru'}
               </button>
             </div>
@@ -148,7 +148,7 @@ export default function ResetPasswordPage() {
               <button 
                 type="button" 
                 onClick={() => setStep('otp')} 
-                className="text-xs text-[#2563EB] hover:text-[#60A5FA] underline font-mono"
+                className="text-xs font-semibold text-[#2563EB] hover:text-[#1D4ED8] hover:underline"
               >
                 ← Kembali ke OTP
               </button>

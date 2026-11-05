@@ -5,7 +5,7 @@ return [
     'midtrans' => [
         'server_key' => env('MIDTRANS_SERVER_KEY'),
         'client_key' => env('MIDTRANS_CLIENT_KEY'),
-        'production' => false,
+        'production' => env('MIDTRANS_IS_PRODUCTION', false),
     ],
 
     'gopay' => [
@@ -14,6 +14,10 @@ return [
 
     'cron' => [
         'secret' => env('CRON_SECRET'),
+    ],
+
+    'recaptcha' => [
+        'secret' => env('RECAPTCHA_SECRET_KEY'),
     ],
 
     /*

@@ -36,10 +36,6 @@ class ProfileController extends Controller
         ]);
 
         $payoutReady = $user->hasCompletePayoutSettings();
-        if ($payoutReady && isset($data['username']) && strtolower($data['username']) !== $user->username) {
-            return response()->json(['message' => 'Username tidak dapat diubah setelah data payout diisi.'], 422);
-        }
-
         $requestedPayout = array_filter([
             'bankName' => $data['payoutBankName'] ?? null,
             'accountNumber' => $data['payoutAccountNumber'] ?? null,
@@ -91,7 +87,11 @@ class ProfileController extends Controller
     {
         abort_unless($user->profile_image_path && Storage::disk('public')->exists($user->profile_image_path), 404);
 
-        return response()->file(Storage::disk('public')->path($user->profile_image_path));
+        return response()->file(Storage::disk('public')->path($user->profile_image_path), [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
     }
 
     public function uploadCoverImage(Request $request): JsonResponse
@@ -123,7 +123,11 @@ class ProfileController extends Controller
     {
         abort_unless($user->cover_image_path && Storage::disk('public')->exists($user->cover_image_path), 404);
 
-        return response()->file(Storage::disk('public')->path($user->cover_image_path));
+        return response()->file(Storage::disk('public')->path($user->cover_image_path), [
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]);
     }
 
     public function uploadNotificationBackground(Request $request): JsonResponse

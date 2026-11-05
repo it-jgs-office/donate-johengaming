@@ -159,12 +159,14 @@ class DonationController extends Controller
 
     private function creatorPayload(User $creator): array
     {
+        $assetVersion = $creator->updated_at?->timestamp ?? 0;
+
         return [
             'username' => $creator->username,
             'displayName' => $creator->display_name,
             'description' => $creator->bio,
-            'profileImage' => $creator->profile_image_path ? url('/api/user/profile-image/'.$creator->id) : null,
-            'coverImage' => $creator->cover_image_path ? url('/api/user/cover-image/'.$creator->id) : null,
+            'profileImage' => $creator->profile_image_path ? url('/api/user/profile-image/'.$creator->id).'?v='.$assetVersion : null,
+            'coverImage' => $creator->cover_image_path ? url('/api/user/cover-image/'.$creator->id).'?v='.$assetVersion : null,
             'socialLinks' => $creator->social_links ?? [],
             'donationSettings' => [
                 'mediaShareEnabled' => ($creator->donation_settings['mediaShareEnabled'] ?? true),
